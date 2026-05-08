@@ -67,6 +67,14 @@
         不採用一覧
     </button>
 
+<select id="userSelect" onchange="displayCompanies()">
+
+    <option value="増田">増田</option>
+    <option value="テスト1">テスト1</option>
+    <option value="テスト2">テスト2</option>
+
+</select>
+
 </div>
 
     <!-- 入力フォーム -->
@@ -188,8 +196,14 @@
 
 
         // localStorage取得
+
+const user =
+    document.getElementById("userSelect").value;
+
         let companies =
-            JSON.parse(localStorage.getItem("companies")) || [];
+            JSON.parse(localStorage.getItem(user)) || [];
+
+
 
 
         // 配列追加
@@ -198,7 +212,7 @@
 
         // 保存
         localStorage.setItem(
-            "companies",
+            user,
             JSON.stringify(companies)
         );
 
@@ -232,8 +246,11 @@
 
 
         // localStorage取得
-        let companies =
-            JSON.parse(localStorage.getItem("companies")) || [];
+        const user =
+    document.getElementById("userSelect").value;
+
+let companies =
+    JSON.parse(localStorage.getItem(user)) || [];
 
 
         // ループ
@@ -354,13 +371,16 @@
 // 削除
 function deleteCompany(index){
 
+const user =
+        document.getElementById("userSelect").value;
+
     let companies =
-        JSON.parse(localStorage.getItem("companies")) || [];
+        JSON.parse(localStorage.getItem(user)) || [];
 
     companies.splice(index, 1);
 
     localStorage.setItem(
-        "companies",
+        user,
         JSON.stringify(companies)
     );
 
@@ -373,13 +393,16 @@ function deleteCompany(index){
 // 状況変更
 function changeStatus(index, newStatus){
 
+const user =
+        document.getElementById("userSelect").value;
+
     let companies =
-        JSON.parse(localStorage.getItem("companies")) || [];
+        JSON.parse(localStorage.getItem(user)) || [];
 
     companies[index].status = newStatus;
 
     localStorage.setItem(
-        "companies",
+        user,
         JSON.stringify(companies)
     );
 
@@ -390,20 +413,29 @@ function changeStatus(index, newStatus){
 // 面接日変更
 function changeInterviewDate(index, newDate){
 
-    let companies =
-        JSON.parse(localStorage.getItem("companies")) || [];
+ 
+
+const user =
+    document.getElementById("userSelect").value;
+
+let companies =
+    JSON.parse(localStorage.getItem(user)) || [];
 
     companies[index].interviewDate = newDate;
 
     localStorage.setItem(
-        "companies",
+        user,
         JSON.stringify(companies)
     );
+
 
     displayCompanies();
 }
 
 function changeMemo(index, newMemo){
+
+const user =
+        document.getElementById("userSelect").value;
 
     let companies =
         JSON.parse(localStorage.getItem("companies")) || [];
@@ -411,7 +443,7 @@ function changeMemo(index, newMemo){
     companies[index].memo = newMemo;
 
     localStorage.setItem(
-        "companies",
+        user,
         JSON.stringify(companies)
     );
 
