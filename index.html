@@ -95,7 +95,9 @@
             <option>不合格</option>
         </select>
 
-        <input type="date" id="interviewDate">
+	<input type="date" id="interviewDate">
+
+        <input type="time" id="interviewTime">
 
         <input type="text" id="memo" placeholder="メモ">
 
@@ -114,6 +116,7 @@
                 <th>会社名</th>
                 <th>状況</th>
                 <th>次回面接</th>
+		<th>時間</th>
                 <th>メモ</th>
                 <th>操作</th>
             </tr>
@@ -180,6 +183,9 @@
         const interviewDate =
             document.getElementById("interviewDate").value;
 
+	const interviewTime =
+   	    document.getElementById("interviewTime").value;
+
         const memo =
             document.getElementById("memo").value;
 
@@ -190,6 +196,7 @@
             companyName: companyName,
             status: status,
             interviewDate: interviewDate,
+	    interviewTime: interviewTime,
             memo: memo
 
         };
@@ -324,6 +331,16 @@ let companies =
         value="${company.interviewDate}"
         onchange="changeInterviewDate(${index}, this.value)"
     >
+
+</td>
+
+<td>
+
+<input
+    type="time"
+    value="${company.interviewTime}"
+    onchange="changeInterviewTime(${index}, this.value)"
+>
 
 </td>
 
@@ -471,6 +488,25 @@ function showFailedCompanies(){
 
     document.getElementById("failedContainer").style.display =
         "block";
+
+}
+
+function changeInterviewTime(index, newTime){
+
+    const user =
+        document.getElementById("userSelect").value;
+
+    let companies =
+        JSON.parse(localStorage.getItem(user)) || [];
+
+    companies[index].interviewTime = newTime;
+
+    localStorage.setItem(
+        user,
+        JSON.stringify(companies)
+    );
+
+    displayCompanies();
 
 }
 
