@@ -78,7 +78,7 @@
 </div>
 
     <!-- 入力フォーム -->
-    <div class="container" id="activeContainer">
+    <div class="container" id="inputContainer">
 
         <h2>企業追加</h2>
 
@@ -174,324 +174,33 @@
     // 企業追加
     function addCompany(){
 
-        const companyName =
-            document.getElementById("companyName").value;
+    const companyName =
+        document.getElementById("companyName").value;
 
-        const status =
-            document.getElementById("status").value;
+    const status =
+        document.getElementById("status").value;
 
-        const interviewDate =
-            document.getElementById("interviewDate").value;
+    const interviewDate =
+        document.getElementById("interviewDate").value;
 
-	const interviewTime =
-   	    document.getElementById("interviewTime").value;
+    const interviewTime =
+        document.getElementById("interviewTime").value;
 
-        const memo =
-            document.getElementById("memo").value;
+    const memo =
+        document.getElementById("memo").value;
 
+    // 会社データ
+    const company = {
 
-        // 会社データ作成
-        const company = {
+        id: Date.now(),
 
-            companyName: companyName,
-            status: status,
-            interviewDate: interviewDate,
-	    interviewTime: interviewTime,
-            memo: memo
+        companyName: companyName,
+        status: status,
+        interviewDate: interviewDate,
+        interviewTime: interviewTime,
+        memo: memo
 
-        };
-
-
-        // localStorage取得
-
-const user =
-    document.getElementById("userSelect").value;
-
-        let companies =
-            JSON.parse(localStorage.getItem(user)) || [];
-
-
-
-
-        // 配列追加
-        companies.push(company);
-
-
-        // 保存
-        localStorage.setItem(
-            user,
-            JSON.stringify(companies)
-        );
-
-
-        // 表更新
-        displayCompanies();
-
-
-        // 入力リセット
-        document.getElementById("companyName").value = "";
-        document.getElementById("interviewDate").value = "";
-        document.getElementById("memo").value = "";
-
-    }
-
-
-
-    // 表示処理
-    function displayCompanies(){
-
-        const table =
-            document.getElementById("companyTable");
-
-	 const failedTable =
-        document.getElementById("failedTable");
-
-        // 一旦空にする
-        table.innerHTML = "";
-
-	failedTable.innerHTML = "";
-
-
-        // localStorage取得
-        const user =
-    document.getElementById("userSelect").value;
-
-let companies =
-    JSON.parse(localStorage.getItem(user)) || [];
-
-
-        // ループ
-       companies.forEach(function(company, index){
-
-            const row =
-                document.createElement("tr");
-
-            // 不合格なら色変更
-            if(company.status === "不合格"){
-
-                row.classList.add("failed");
-
-            }
-
-
-            row.innerHTML = `
-
-              <td>${company.companyName}</td>
-
-    <td>
-        <select onchange="changeStatus(${index}, this.value)">
-
-            <option value="気になる"
-                ${company.status === "気になる" ? "selected" : ""}>
-                気になる
-            </option>
-
-            <option value="応募済み"
-                ${company.status === "応募済み" ? "selected" : ""}>
-                応募済み
-            </option>
-
-            <option value="ES提出"
-                ${company.status === "ES提出" ? "selected" : ""}>
-                ES提出
-            </option>
-
-            <option value="1次面接"
-                ${company.status === "1次面接" ? "selected" : ""}>
-                1次面接
-            </option>
-
-            <option value="2次面接"
-                ${company.status === "2次面接" ? "selected" : ""}>
-                2次面接
-            </option>
-
-            <option value="最終面接"
-                ${company.status === "最終面接" ? "selected" : ""}>
-                最終面接
-            </option>
-
-            <option value="内定"
-                ${company.status === "内定" ? "selected" : ""}>
-                内定
-            </option>
-
-            <option value="不合格"
-                ${company.status === "不合格" ? "selected" : ""}>
-                不合格
-            </option>
-
-        </select>
-    </td>
-
-    <td>
-
-    <input
-        type="date"
-        value="${company.interviewDate}"
-        onchange="changeInterviewDate(${index}, this.value)"
-    >
-
-</td>
-
-<td>
-
-<input
-    type="time"
-    value="${company.interviewTime}"
-    onchange="changeInterviewTime(${index}, this.value)"
->
-
-</td>
-
-    <td>
-
-    <input
-        type="text"
-        value="${company.memo}"
-        onchange="changeMemo(${index}, this.value)"
-    >
-
-</td>
-
-    <td>
-        <button onclick="deleteCompany(${index})">
-            削除
-        </button>
-    </td>
-
-`;
-
-          if(company.status === "不合格"){
-
-    failedTable.appendChild(row);
-
-}else{
-
-    table.appendChild(row);
-
-}
-
-        });
-
-    }
-
-
-
-    // 初回読み込み
-    function loadCompanies(){
-
-        displayCompanies();
-
-    }
-
-// 削除
-function deleteCompany(index){
-
-const user =
-        document.getElementById("userSelect").value;
-
-    let companies =
-        JSON.parse(localStorage.getItem(user)) || [];
-
-    companies.splice(index, 1);
-
-    localStorage.setItem(
-        user,
-        JSON.stringify(companies)
-    );
-
-    displayCompanies();
-
-}
-
-
-
-// 状況変更
-function changeStatus(index, newStatus){
-
-const user =
-        document.getElementById("userSelect").value;
-
-    let companies =
-        JSON.parse(localStorage.getItem(user)) || [];
-
-    companies[index].status = newStatus;
-
-    localStorage.setItem(
-        user,
-        JSON.stringify(companies)
-    );
-
-    displayCompanies();
-
-}
-
-// 面接日変更
-function changeInterviewDate(index, newDate){
-
- 
-
-const user =
-    document.getElementById("userSelect").value;
-
-let companies =
-    JSON.parse(localStorage.getItem(user)) || [];
-
-    companies[index].interviewDate = newDate;
-
-    localStorage.setItem(
-        user,
-        JSON.stringify(companies)
-    );
-
-
-    displayCompanies();
-}
-
-function changeMemo(index, newMemo){
-
-const user =
-        document.getElementById("userSelect").value;
-
-    let companies =
-        JSON.parse(localStorage.getItem("companies")) || [];
-
-    companies[index].memo = newMemo;
-
-    localStorage.setItem(
-        user,
-        JSON.stringify(companies)
-    );
-
-    displayCompanies();
-
-}
-
-function showActiveCompanies(){
-
-    document.getElementById("activeContainer").style.display =
-        "block";
-
-    document.getElementById("failedContainer").style.display =
-        "none";
-
-}
-
-
-
-// 不採用表示
-function showFailedCompanies(){
-
-    document.getElementById("activeContainer").style.display =
-        "none";
-
-    document.getElementById("failedContainer").style.display =
-        "block";
-
-}
-
-function changeInterviewTime(index, newTime){
+    };
 
     const user =
         document.getElementById("userSelect").value;
@@ -499,7 +208,180 @@ function changeInterviewTime(index, newTime){
     let companies =
         JSON.parse(localStorage.getItem(user)) || [];
 
-    companies[index].interviewTime = newTime;
+    companies.push(company);
+
+    localStorage.setItem(
+        user,
+        JSON.stringify(companies)
+    );
+
+    displayCompanies();
+
+    // リセット
+    document.getElementById("companyName").value = "";
+    document.getElementById("interviewDate").value = "";
+    document.getElementById("interviewTime").value = "";
+    document.getElementById("memo").value = "";
+
+}
+//修正済み確認
+
+
+
+
+    // 表示処理
+   function displayCompanies(){
+
+    const table =
+        document.getElementById("companyTable");
+
+    const failedTable =
+        document.getElementById("failedTable");
+
+    // 初期化
+    table.innerHTML = "";
+    failedTable.innerHTML = "";
+
+    // ユーザー取得
+    const user =
+        document.getElementById("userSelect").value;
+
+    let companies =
+        JSON.parse(localStorage.getItem(user)) || [];
+
+    // 並び替え
+    companies.sort(function(a, b){
+
+        const dateA =
+            new Date(a.interviewDate + " " + a.interviewTime);
+
+        const dateB =
+            new Date(b.interviewDate + " " + b.interviewTime);
+
+        return dateA - dateB;
+
+    });
+
+    // 表示
+    companies.forEach(function(company){
+
+        const row =
+            document.createElement("tr");
+
+        // 不合格色
+        if(company.status === "不合格"){
+
+            row.classList.add("failed");
+
+        }
+
+        row.innerHTML = `
+
+<td>${company.companyName}</td>
+
+<td>
+    <select onchange="changeStatus(${company.id}, this.value)">
+
+        <option value="気になる"
+            ${company.status === "気になる" ? "selected" : ""}>
+            気になる
+        </option>
+
+        <option value="応募済み"
+            ${company.status === "応募済み" ? "selected" : ""}>
+            応募済み
+        </option>
+
+        <option value="ES提出"
+            ${company.status === "ES提出" ? "selected" : ""}>
+            ES提出
+        </option>
+
+        <option value="1次面接"
+            ${company.status === "1次面接" ? "selected" : ""}>
+            1次面接
+        </option>
+
+        <option value="2次面接"
+            ${company.status === "2次面接" ? "selected" : ""}>
+            2次面接
+        </option>
+
+        <option value="最終面接"
+            ${company.status === "最終面接" ? "selected" : ""}>
+            最終面接
+        </option>
+
+        <option value="内定"
+            ${company.status === "内定" ? "selected" : ""}>
+            内定
+        </option>
+
+        <option value="不合格"
+            ${company.status === "不合格" ? "selected" : ""}>
+            不合格
+        </option>
+
+    </select>
+</td>
+
+<td>
+    <input
+        type="date"
+        value="${company.interviewDate}"
+        onchange="changeInterviewDate(${company.id}, this.value)"
+    >
+</td>
+
+<td>
+    <input
+        type="time"
+        value="${company.interviewTime}"
+        onchange="changeInterviewTime(${company.id}, this.value)"
+    >
+</td>
+
+<td>
+    <input
+        type="text"
+        value="${company.memo}"
+        onchange="changeMemo(${company.id}, this.value)"
+    >
+</td>
+
+<td>
+    <button onclick="deleteCompany(${company.id})">
+        削除
+    </button>
+</td>
+
+`;
+
+        // 不合格振り分け
+        if(company.status === "不合格"){
+
+            failedTable.appendChild(row);
+
+        }else{
+
+            table.appendChild(row);
+
+        }
+
+    });
+
+}
+// 削除
+function deleteCompany(id){
+
+    const user =
+        document.getElementById("userSelect").value;
+
+    let companies =
+        JSON.parse(localStorage.getItem(user)) || [];
+
+    companies =
+        companies.filter(company => company.id !== id);
 
     localStorage.setItem(
         user,
@@ -510,6 +392,127 @@ function changeInterviewTime(index, newTime){
 
 }
 
+
+// 面接日変更
+function changeInterviewDate(id, newDate){
+
+    const user =
+        document.getElementById("userSelect").value;
+
+    let companies =
+        JSON.parse(localStorage.getItem(user)) || [];
+
+    const company =
+        companies.find(c => c.id === id);
+
+    company.interviewDate = newDate;
+
+    localStorage.setItem(
+        user,
+        JSON.stringify(companies)
+    );
+
+    displayCompanies();
+
+}
+
+
+
+function showActiveCompanies(){
+
+    document.getElementById("inputContainer").style.display =
+        "block";
+
+    document.getElementById("activeContainer").style.display =
+        "block";
+
+    document.getElementById("failedContainer").style.display =
+        "none";
+
+}
+
+
+// 不採用表示
+function showFailedCompanies(){
+
+    document.getElementById("inputContainer").style.display =
+        "none";
+
+    document.getElementById("activeContainer").style.display =
+        "none";
+
+    document.getElementById("failedContainer").style.display =
+        "block";
+
+}
+
+function changeInterviewTime(id, newTime){
+
+    const user =
+        document.getElementById("userSelect").value;
+
+    let companies =
+        JSON.parse(localStorage.getItem(user)) || [];
+
+    const company =
+        companies.find(c => c.id === id);
+
+    company.interviewTime = newTime;
+
+    localStorage.setItem(
+        user,
+        JSON.stringify(companies)
+    );
+
+    displayCompanies();
+
+
+}
+
+function changeMemo(id, newMemo){
+
+    const user =
+        document.getElementById("userSelect").value;
+
+    let companies =
+        JSON.parse(localStorage.getItem(user)) || [];
+
+    const company =
+        companies.find(c => c.id === id);
+
+    company.memo = newMemo;
+
+    localStorage.setItem(
+        user,
+        JSON.stringify(companies)
+    );
+
+    displayCompanies();
+
+}
+
+
+function changeStatus(id, newStatus){
+
+    const user =
+        document.getElementById("userSelect").value;
+
+    let companies =
+        JSON.parse(localStorage.getItem(user)) || [];
+
+    const company =
+        companies.find(c => c.id === id);
+
+    company.status = newStatus;
+
+    localStorage.setItem(
+        user,
+        JSON.stringify(companies)
+    );
+
+    displayCompanies();
+
+}
 </script>
 
 
