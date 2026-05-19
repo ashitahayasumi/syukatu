@@ -4,6 +4,8 @@
 
 <head>
     <meta charset="UTF-8">
+
+
     <title>就活管理ツール</title>  
 <meta name="viewport" content="width=device-width, initial-scale=1.0">	
 
@@ -52,6 +54,10 @@
             background-color: #ffd6d6;
         }
 
+#dashboard{
+    display: none;
+}
+
 @media screen and (max-width: 768px){
 
     body{
@@ -87,6 +93,7 @@
 
 }
 
+
     </style>
 
 </head>
@@ -105,7 +112,7 @@ Googleログイン
 ログインしていません
 </p>
 
-
+<div id="dashboard">
 
     <h1>就活管理ダッシュボード</h1>
 
@@ -216,7 +223,9 @@ import {
   addDoc,
   getDocs,
   query,
-  where 	
+  where,
+  deleteDoc,
+  doc 	
 
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -249,8 +258,6 @@ const provider = new GoogleAuthProvider();
 
          // ページ読み込み時
     window.onload = function(){
-
-        displayCompanies();
 
 	showActiveCompanies();
 
@@ -331,7 +338,11 @@ const querySnapshot = await getDocs(q);
             <td>${company.interviewDate}</td>
             <td>${company.interviewTime}</td>
             <td>${company.memo}</td>
-            <td>---</td>
+            <td>
+    <button onclick="deleteCompany('${doc.id}')">
+        削除
+    </button>
+</td>
         `;
 
         table.appendChild(row);
@@ -363,6 +374,23 @@ function showFailedCompanies(){
 
     document.getElementById("failedContainer").style.display =
         "block";
+
+}
+
+async function deleteCompany(id){
+
+    const result =
+        confirm("本当に削除しますか？");
+
+    if(!result){
+        return;
+    }
+
+    await deleteDoc(doc(db, "companies", id));
+
+    alert("削除しました");
+
+    displayCompanies();
 
 }
 
@@ -403,6 +431,19 @@ onAuthStateChanged(auth, (user) => {
         document.getElementById("userInfo").innerText =
             "ログイン中: " + user.displayName;
 
+        document.getElementById("dashboard").style.display =
+            "block";
+
+        displayCompanies();
+
+    }else{
+
+        document.getElementById("dashboard").style.display =
+            "none";
+
+        document.getElementById("userInfo").innerText =
+            "ログインしていません";
+
     }
 
 });
@@ -414,8 +455,11 @@ window.showActiveCompanies = showActiveCompanies;
 window.showFailedCompanies = showFailedCompanies;
 window.login = login;
 window.logout = logout;
+window.deleteCompany = deleteCompany;
 
  </script>
+
+</div>
 
 </body>
 </html>
