@@ -225,7 +225,8 @@ import {
   query,
   where,
   deleteDoc,
-  doc 	
+  doc,
+  updateDoc 	
 
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -332,19 +333,65 @@ const querySnapshot = await getDocs(q);
         const row =
             document.createElement("tr");
 
-        row.innerHTML = `
-            <td>${company.companyName}</td>
-            <td>${company.status}</td>
-            <td>${company.interviewDate}</td>
-            <td>${company.interviewTime}</td>
-            <td>${company.memo}</td>
-            <td>
-    <button onclick="deleteCompany('${doc.id}')">
-        削除
-    </button>
+ row.innerHTML = `
+<td>
+<input
+value="${company.companyName}"
+onchange="confirmUpdate('${doc.id}', 'companyName', this.value)"
+>
 </td>
-        `;
 
+<td>
+<select onchange="confirmUpdate('${doc.id}', 'status', this.value)">
+
+<option value="気になる" ${company.status === "気になる" ? "selected" : ""}>気になる</option>
+
+<option value="応募済み" ${company.status === "応募済み" ? "selected" : ""}>応募済み</option>
+
+<option value="ES提出" ${company.status === "ES提出" ? "selected" : ""}>ES提出</option>
+
+<option value="1次面接" ${company.status === "1次面接" ? "selected" : ""}>1次面接</option>
+
+<option value="2次面接" ${company.status === "2次面接" ? "selected" : ""}>2次面接</option>
+
+<option value="最終面接" ${company.status === "最終面接" ? "selected" : ""}>最終面接</option>
+
+<option value="内定" ${company.status === "内定" ? "selected" : ""}>内定</option>
+
+<option value="不合格" ${company.status === "不合格" ? "selected" : ""}>不合格</option>
+
+</select>
+</td>
+
+<td>
+<input
+type="date"
+value="${company.interviewDate}"
+onchange="confirmUpdate('${doc.id}', 'interviewDate', this.value)"
+>
+</td>
+
+<td>
+<input
+type="time"
+value="${company.interviewTime}"
+onchange="confirmUpdate('${doc.id}', 'interviewTime', this.value)"
+>
+</td>
+
+<td>
+<input
+value="${company.memo}"
+onchange="confirmUpdate('${doc.id}', 'memo', this.value)"
+>
+</td>
+
+<td>
+<button onclick="deleteCompany('${doc.id}')">
+削除
+</button>
+</td>
+`;
         table.appendChild(row);
 
     });
@@ -391,6 +438,31 @@ async function deleteCompany(id){
     alert("削除しました");
 
     displayCompanies();
+
+}
+
+async function confirmUpdate(id, field, value){
+
+    const result =
+        confirm("変更を保存しますか？");
+
+    if(!result){
+        return;
+    }
+
+    await updateCompany(id, field, value);
+
+    alert("更新しました");
+
+}
+
+async function updateCompany(id, field, value){
+
+    await updateDoc(doc(db, "companies", id), {
+
+        [field]: value
+
+    });
 
 }
 
@@ -456,6 +528,8 @@ window.showFailedCompanies = showFailedCompanies;
 window.login = login;
 window.logout = logout;
 window.deleteCompany = deleteCompany;
+window.updateCompany = updateCompany;
+window.confirmUpdate = confirmUpdate;
 
  </script>
 
