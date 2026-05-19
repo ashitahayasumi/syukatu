@@ -19,6 +19,8 @@
             text-align: center;
         }
 
+
+
         .container{
             background-color: white;
             padding: 20px;
@@ -90,6 +92,18 @@
 </head>
 
 <body>
+
+<button onclick="login()">
+Googleログイン
+</button>
+
+<button onclick="logout()">
+ログアウト
+</button>
+
+<p id="userInfo"></p>
+
+
 
     <h1>就活管理ダッシュボード</h1>
 
@@ -208,6 +222,15 @@ import {
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signOut
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBkGJgF_6CSlCs74vIJxakA3fPGJ0QUmn4",
   authDomain: "job-dashboard-d8497.firebaseapp.com",
@@ -220,6 +243,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
+
+const auth = getAuth(app);
+
+const provider = new GoogleAuthProvider();
 
          // ページ読み込み時
     window.onload = function(){
@@ -330,11 +357,54 @@ function showFailedCompanies(){
 
 }
 
+async function login(){
+
+    try{
+
+        const result =
+            await signInWithPopup(auth, provider);
+
+        const user = result.user;
+
+        document.getElementById("userInfo").innerText =
+            user.displayName;
+
+    }catch(error){
+
+        console.log(error);
+	alert(error.message);
+
+    }
+
+}
+
+async function logout(){
+
+    await signOut(auth);
+
+    document.getElementById("userInfo").innerText =
+        "";
+
+}
+
+onAuthStateChanged(auth, (user) => {
+
+    if(user){
+
+        document.getElementById("userInfo").innerText =
+            user.displayName;
+
+    }
+
+});
+
 
 window.addCompany = addCompany;
 window.displayCompanies = displayCompanies;
 window.showActiveCompanies = showActiveCompanies;
 window.showFailedCompanies = showFailedCompanies;
+window.login = login;
+window.logout = logout;
 
  </script>
 
