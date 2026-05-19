@@ -257,6 +257,10 @@ const auth = getAuth(app);
 
 const provider = new GoogleAuthProvider();
 
+provider.addScope(
+    "https://www.googleapis.com/auth/calendar"
+);
+
          // ページ読み込み時
     window.onload = function(){
 
