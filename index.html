@@ -101,7 +101,9 @@ Googleログイン
 ログアウト
 </button>
 
-<p id="userInfo"></p>
+<p id="userInfo">
+ログインしていません
+</p>
 
 
 
@@ -117,13 +119,7 @@ Googleログイン
         不採用一覧
     </button>
 
-<select id="userSelect" onchange="displayCompanies()">
 
-    <option value="増田">増田</option>
-    <option value="テスト1">テスト1</option>
-    <option value="テスト2">テスト2</option>
-
-</select>
 
 </div>
 
@@ -218,7 +214,10 @@ import {
   getFirestore,
   collection,
   addDoc,
-  getDocs
+  getDocs,
+  query,
+  where 	
+
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -278,11 +277,13 @@ async function addCompany(){
 
     await addDoc(collection(db, "companies"), {
 
-        companyName: companyName,
-        status: status,
-        interviewDate: interviewDate,
-        interviewTime: interviewTime,
-        memo: memo
+        uid: auth.currentUser.uid,
+
+    companyName: companyName,
+    status: status,
+    interviewDate: interviewDate,
+    interviewTime: interviewTime,
+    memo: memo
 
     });
 
@@ -301,13 +302,21 @@ async function addCompany(){
     // 表示
 async function displayCompanies(){
 
+if(!auth.currentUser){
+    return;
+}
+
     const table =
         document.getElementById("companyTable");
 
     table.innerHTML = "";
 
-    const querySnapshot =
-        await getDocs(collection(db, "companies"));
+    const q = query(
+    collection(db, "companies"),
+    where("uid", "==", auth.currentUser.uid)
+);
+
+const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => {
 
@@ -383,7 +392,7 @@ async function logout(){
     await signOut(auth);
 
     document.getElementById("userInfo").innerText =
-        "";
+        "ログインしていません";
 
 }
 
@@ -392,7 +401,7 @@ onAuthStateChanged(auth, (user) => {
     if(user){
 
         document.getElementById("userInfo").innerText =
-            user.displayName;
+            "ログイン中: " + user.displayName;
 
     }
 
